@@ -22,7 +22,6 @@ func init() {
 
 func main() {
 	e := echo.New()
-	// All the endpoints will be defined here
 	db, err := database.MySQLConn(context.Background(), os.Getenv("USERNAME"), os.Getenv("PASSWORD"), os.Getenv("HOST"), os.Getenv("PORT"), os.Getenv("DATABASE_NAME"))
 	if err != nil {
 		log.Printf("Error while connecting to the database:%v", err)
@@ -33,11 +32,14 @@ func main() {
 	if err != nil {
 		log.Printf("Error while creating table in database:%v", err)
 	}
-	h := handler.Handler{ // Don't forget to declare variable
+	h := handler.Handler{
 		DB: db,
 	}
+	// All the endpoints will be defined here
 	e.GET("/health", h.HealthCheck)
 	e.GET("/cats", h.GetCats)
+	e.PUT("updatecat", h.UpdateCatInfo)
 	e.GET("/cats/breed_name/:breed_name", h.GetCat)
+	e.POST("/newcat", h.AddNewCatToDB)
 	e.Logger.Fatal(e.Start(os.Getenv("APP_PORT")))
 }

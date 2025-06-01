@@ -8,3 +8,8 @@ type AddNewCat struct {
 	BodyType             []string `json:"body_type"`
 	CoatPattern          string   `json:"coat_pattern"`
 }
+
+type UpdateCatInfo struct {
+	CatBreed    string  `json:"cat_breed"`
+	CatTypeInfo *string `json:"cat_type_info"`
+}
