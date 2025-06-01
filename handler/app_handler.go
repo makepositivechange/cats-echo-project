@@ -39,25 +39,23 @@ func (h *Handler) GetCat(c echo.Context) error {
 }
 
 func (h *Handler) UpdateCatInfo(c echo.Context) error {
+	breed_name := c.Param("breed_name")
 	var cat_model models.CatInfo
 	payload := new(requests.UpdateCatInfo)
 	err := (&echo.DefaultBinder{}).Bind(&payload, c)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, "Invalid Request")
 	}
-	res := h.DB.Where("breed_name = ?", payload.CatBreed).First(&cat_model)
+	res := h.DB.Where("breed_name = ?", breed_name).Find(&cat_model)
 	if res.Error != nil {
 		return c.JSON(http.StatusNotFound, "Breed not found in database")
 	}
 	if payload.CatTypeInfo != nil {
 		cat_model.TypeInfo = payload.CatTypeInfo
-		result := h.DB.Model(&cat_model).Updates(map[string]any{
-			"type_info": payload.CatTypeInfo,
-		})
+		result := h.DB.Save(&cat_model)
 		if result.Error != nil {
 			return c.JSON(http.StatusInternalServerError, "Failed to store updated information")
 		}
-
 	}
 	return c.JSON(http.StatusOK, cat_model)
 }

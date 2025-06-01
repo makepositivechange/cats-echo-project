@@ -10,6 +10,5 @@ type AddNewCat struct {
 }
 
 type UpdateCatInfo struct {
-	CatBreed    string  `json:"cat_breed"`
 	CatTypeInfo *string `json:"cat_type_info"`
 }

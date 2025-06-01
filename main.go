@@ -38,7 +38,7 @@ func main() {
 	// All the endpoints will be defined here
 	e.GET("/health", h.HealthCheck)
 	e.GET("/cats", h.GetCats)
-	e.PUT("updatecat", h.UpdateCatInfo)
+	e.PUT("updatecat/breed_name/:breed_name", h.UpdateCatInfo)
 	e.GET("/cats/breed_name/:breed_name", h.GetCat)
 	e.POST("/newcat", h.AddNewCatToDB)
 	e.Logger.Fatal(e.Start(os.Getenv("APP_PORT")))
