@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -22,7 +23,9 @@ func init() {
 
 func main() {
 	e := echo.New()
-	db, err := database.MySQLConn(context.Background(), os.Getenv("USERNAME"), os.Getenv("PASSWORD"), os.Getenv("HOST"), os.Getenv("PORT"), os.Getenv("DATABASE_NAME"))
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	db, err := database.MySQLConn(ctx, os.Getenv("USERNAME"), os.Getenv("PASSWORD"), os.Getenv("HOST"), os.Getenv("PORT"), os.Getenv("DATABASE_NAME"))
 	if err != nil {
 		log.Printf("Error while connecting to the database:%v", err)
 		return
@@ -31,6 +34,7 @@ func main() {
 	err = db.AutoMigrate(&cat_model)
 	if err != nil {
 		log.Printf("Error while creating table in database:%v", err)
+		return
 	}
 	h := handler.Handler{
 		DB: db,
