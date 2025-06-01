@@ -45,5 +45,7 @@ func main() {
 	e.PUT("updatecat/breed_name/:breed_name", h.UpdateCatInfo)
 	e.GET("/cats/breed_name/:breed_name", h.GetCat)
 	e.POST("/newcat", h.AddNewCatToDB)
+	e.DELETE("/deletecat/:id", h.RemoveCatFromDB)
+	// The below command will start the application
 	e.Logger.Fatal(e.Start(os.Getenv("APP_PORT")))
 }

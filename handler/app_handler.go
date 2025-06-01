@@ -81,3 +81,12 @@ func (h *Handler) AddNewCatToDB(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, n_movie)
 }
+
+func (h *Handler) RemoveCatFromDB(c echo.Context) error {
+	breed_name := c.Param("breed_name")
+	res := h.DB.Where("breed_name = ?", breed_name).Delete(&models.CatInfo{})
+	if res.Error != nil {
+		return c.JSON(http.StatusNotFound, "Breed not found in database")
+	}
+	return c.JSON(http.StatusOK, "Successful delete")
+}
