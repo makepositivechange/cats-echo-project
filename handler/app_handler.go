@@ -41,7 +41,7 @@ func (h *Handler) GetCat(c echo.Context) error {
 func (h *Handler) UpdateCatInfo(c echo.Context) error {
 	breed_name := c.Param("breed_name")
 	var cat_model models.CatInfo
-	payload := new(requests.UpdateCatInfo)
+	payload := new(requests.UpdateCatTypeInfo)
 	err := (&echo.DefaultBinder{}).Bind(&payload, c)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, "Invalid Request")

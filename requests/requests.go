@@ -9,6 +9,6 @@ type AddNewCat struct {
 	CoatPattern          string   `json:"coat_pattern"`
 }
 
-type UpdateCatInfo struct {
+type UpdateCatTypeInfo struct {
 	CatTypeInfo *string `json:"cat_type_info"`
 }
