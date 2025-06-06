@@ -7,6 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/makepostivechange/cats-echo-project/models"
 	"github.com/makepostivechange/cats-echo-project/requests"
+	"github.com/makepostivechange/cats-echo-project/response"
 )
 
 func (h *Handler) HealthCheck(c echo.Context) error {
@@ -33,7 +34,11 @@ func (h *Handler) GetCat(c echo.Context) error {
 	var cat_model models.CatInfo
 	res := h.DB.Where("breed_name = ?", breed_name).First(&cat_model)
 	if res.Error != nil {
-		return c.JSON(http.StatusNotFound, "Breed not found in database")
+		response := response.Response{
+			Code:    http.StatusNotFound,
+			Message: "Breed not found in database",
+		}
+		return c.JSON(http.StatusNotFound, response)
 	}
 	return c.JSON(http.StatusOK, cat_model)
 }
@@ -44,7 +49,11 @@ func (h *Handler) UpdateCatInfo(c echo.Context) error {
 	payload := new(requests.UpdateCatTypeInfo)
 	err := (&echo.DefaultBinder{}).Bind(&payload, c)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, "Invalid Request")
+		response_request := response.Response{
+			Code:    http.StatusBadRequest,
+			Message: "Invalid Request",
+		}
+		return c.JSON(http.StatusBadRequest, response_request)
 	}
 	res := h.DB.Where("breed_name = ?", breed_name).Find(&cat_model)
 	if res.Error != nil {
@@ -54,7 +63,11 @@ func (h *Handler) UpdateCatInfo(c echo.Context) error {
 		cat_model.TypeInfo = payload.CatTypeInfo
 		result := h.DB.Save(&cat_model)
 		if result.Error != nil {
-			return c.JSON(http.StatusInternalServerError, "Failed to store updated information")
+			response_error := response.Response{
+				Code:    http.StatusInternalServerError,
+				Message: "Failed to store updated information",
+			}
+			return c.JSON(http.StatusInternalServerError, response_error)
 		}
 	}
 	return c.JSON(http.StatusOK, cat_model)
@@ -65,7 +78,12 @@ func (h *Handler) AddNewCatToDB(c echo.Context) error {
 	err := (&echo.DefaultBinder{}).Bind(payload, c)
 	if err != nil {
 		log.Printf("Received an invalid request:%v", err)
-		return c.JSON(http.StatusBadRequest, "invalid request received")
+		response := response.Response{
+			Code:    http.StatusBadRequest,
+			Message: "invalid request received",
+			Error:   err,
+		}
+		return c.JSON(http.StatusBadRequest, response)
 	}
 	n_movie := models.CatInfo{
 		BreedName:   payload.CatBreed,
@@ -77,7 +95,12 @@ func (h *Handler) AddNewCatToDB(c echo.Context) error {
 	}
 	result := h.DB.Create(&n_movie)
 	if result.Error != nil {
-		return c.JSON(http.StatusInternalServerError, "Could not add movie")
+		response_err := response.Response{
+			Code:    http.StatusInternalServerError,
+			Message: "Could not add movie",
+			Error:   result.Error,
+		}
+		return c.JSON(http.StatusInternalServerError, response_err)
 	}
 	return c.JSON(http.StatusOK, n_movie)
 }
