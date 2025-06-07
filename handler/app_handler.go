@@ -24,9 +24,18 @@ func (h *Handler) GetCats(c echo.Context) error {
 	var cat_model []models.CatInfo
 	res := h.DB.Find(&cat_model)
 	if res.Error != nil {
-		return c.JSON(http.StatusNotFound, "Could not find cats info from database")
+		response := response.Response{
+			Code:    http.StatusNotFound,
+			Message: "Could not find cats info from database",
+			Error:   res.Error,
+		}
+		return c.JSON(http.StatusNotFound, response)
 	}
-	return c.JSON(http.StatusOK, cat_model)
+	res_success := response.Response{
+		Code:    http.StatusOK,
+		Message: "success",
+	}
+	return c.JSON(http.StatusOK, res_success)
 }
 
 func (h *Handler) GetCat(c echo.Context) error {
