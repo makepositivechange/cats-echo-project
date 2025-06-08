@@ -23,9 +23,15 @@ func init() {
 
 func main() {
 	e := echo.New()
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	db, err := database.MySQLConn(ctx, os.Getenv("USERNAME"), os.Getenv("PASSWORD"), os.Getenv("HOST"), os.Getenv("PORT"), os.Getenv("DATABASE_NAME"))
+	db, err := database.MySQLConn(ctx, os.
+		Getenv("USERNAME"),
+		os.Getenv("PASSWORD"),
+		os.Getenv("HOST"),
+		os.Getenv("PORT"),
+		os.Getenv("DATABASE_NAME"))
 	if err != nil {
 		log.Printf("Error while connecting to the database:%v", err)
 		return
