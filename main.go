@@ -26,8 +26,7 @@ func main() {
 	ctx := context.Background()
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	db, err := database.MySQLConn(ctx, os.
-		Getenv("USERNAME"),
+	db, err := database.MySQLConn(ctx, os.Getenv("USERNAME"),
 		os.Getenv("PASSWORD"),
 		os.Getenv("HOST"),
 		os.Getenv("PORT"),

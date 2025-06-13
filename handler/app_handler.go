@@ -118,7 +118,12 @@ func (h *Handler) RemoveCatFromDB(c echo.Context) error {
 	breed_name := c.Param("breed_name")
 	res := h.DB.Where("breed_name = ?", breed_name).Delete(&models.CatInfo{})
 	if res.Error != nil {
-		return c.JSON(http.StatusNotFound, "Breed not found in database")
+		res := response.Response{
+			Code:    http.StatusInternalServerError,
+			Message: "Breed not found in database",
+			Error:   res.Error,
+		}
+		return c.JSON(http.StatusInternalServerError, res)
 	}
 	return c.JSON(http.StatusOK, "Successful delete")
 }
